@@ -1,0 +1,29 @@
+{
+  "name": "desafio-backend-jitterbit",
+  "version": "1.0.0",
+  "description": "API de pedidos em Node.js com Express e MongoDB",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "echo \"No tests configured\" && exit 0"
+  },
+  "keywords": [
+    "node",
+    "express",
+    "mongodb",
+    "mongoose",
+    "api",
+    "orders"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "express": "^5.2.1",
+    "mongoose": "^9.2.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
