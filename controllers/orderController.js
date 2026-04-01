@@ -1,18 +1,26 @@
 const Order = require('../models/orderModel')
 
 function mapIncomingOrder(payload = {}, isPartial = false) {
-  const mapped = {}
+  const mappedOrder = {}
 
-  if (payload.numeroPedido !== undefined) mapped.orderId = String(payload.numeroPedido)
-  if (payload.valorTotal !== undefined) mapped.value = Number(payload.valorTotal)
-  if (payload.dataCriacao !== undefined) mapped.creationDate = new Date(payload.dataCriacao)
+  if (payload.numeroPedido !== undefined) {
+    mappedOrder.orderId = String(payload.numeroPedido)
+  }
+
+  if (payload.valorTotal !== undefined) {
+    mappedOrder.value = Number(payload.valorTotal)
+  }
+
+  if (payload.dataCriacao !== undefined) {
+    mappedOrder.creationDate = new Date(payload.dataCriacao)
+  }
 
   if (payload.items !== undefined) {
     if (!Array.isArray(payload.items)) {
       throw new Error('Campo items deve ser um array.')
     }
 
-    mapped.items = payload.items.map((item) => {
+    mappedOrder.items = payload.items.map((item) => {
       const mappedItem = {
         productId: Number(item.idItem),
         quantity: Number(item.quantidadeItem),
@@ -32,17 +40,25 @@ function mapIncomingOrder(payload = {}, isPartial = false) {
   }
 
   if (!isPartial) {
-    if (!mapped.orderId || Number.isNaN(mapped.value) || !mapped.creationDate) {
+    if (
+      !mappedOrder.orderId ||
+      Number.isNaN(mappedOrder.value) ||
+      !mappedOrder.creationDate
+    ) {
       throw new Error('Campos obrigatorios: numeroPedido, valorTotal e dataCriacao.')
     }
-    if (Number.isNaN(mapped.creationDate.getTime())) {
+
+    if (Number.isNaN(mappedOrder.creationDate.getTime())) {
       throw new Error('Campo dataCriacao invalido.')
     }
-  } else if (mapped.creationDate && Number.isNaN(mapped.creationDate.getTime())) {
+  } else if (
+    mappedOrder.creationDate &&
+    Number.isNaN(mappedOrder.creationDate.getTime())
+  ) {
     throw new Error('Campo dataCriacao invalido.')
   }
 
-  return mapped
+  return mappedOrder
 }
 
 async function createOrder(req, res) {
@@ -62,10 +78,13 @@ async function createOrder(req, res) {
     }
 
     if (error.code === 11000) {
-      return res.status(409).json({ message: 'Ja existe pedido com esse orderId.' })
+      return res.status(409).json({ message: 'Ja existe um pedido com esse numero.' })
     }
 
-    return res.status(500).json({ message: 'Erro ao criar pedido.', error: error.message })
+    return res.status(500).json({
+      message: 'Erro ao criar pedido.',
+      error: error.message
+    })
   }
 }
 
@@ -78,27 +97,34 @@ async function getOrderById(req, res) {
       return res.status(404).json({ message: 'Pedido nao encontrado.' })
     }
 
-    return res.json(order)
+    return res.status(200).json(order)
   } catch (error) {
-    return res.status(500).json({ message: 'Erro ao buscar pedido.', error: error.message })
+    return res.status(500).json({
+      message: 'Erro ao buscar pedido.',
+      error: error.message
+    })
   }
 }
 
 async function listOrders(req, res) {
   try {
     const orders = await Order.find().sort({ creationDate: -1 })
-    return res.json(orders)
+
+    return res.status(200).json(orders)
   } catch (error) {
-    return res.status(500).json({ message: 'Erro ao listar pedidos.', error: error.message })
+    return res.status(500).json({
+      message: 'Erro ao listar pedidos.',
+      error: error.message
+    })
   }
 }
 
 async function updateOrder(req, res) {
   try {
     const { id } = req.params
-    const payload = mapIncomingOrder(req.body, true)
+    const mappedOrder = mapIncomingOrder(req.body, true)
 
-    if (payload.orderId && payload.orderId !== id) {
+    if (mappedOrder.orderId && mappedOrder.orderId !== id) {
       return res.status(400).json({
         message: 'numeroPedido no body deve ser igual ao parametro da URL.'
       })
@@ -106,7 +132,7 @@ async function updateOrder(req, res) {
 
     const updatedOrder = await Order.findOneAndUpdate(
       { orderId: id },
-      payload,
+      mappedOrder,
       { new: true, runValidators: true }
     )
 
@@ -114,7 +140,7 @@ async function updateOrder(req, res) {
       return res.status(404).json({ message: 'Pedido nao encontrado.' })
     }
 
-    return res.json(updatedOrder)
+    return res.status(200).json(updatedOrder)
   } catch (error) {
     if (
       error.message.includes('invalido') ||
@@ -125,10 +151,13 @@ async function updateOrder(req, res) {
     }
 
     if (error.code === 11000) {
-      return res.status(409).json({ message: 'Ja existe pedido com esse orderId.' })
+      return res.status(409).json({ message: 'Ja existe um pedido com esse numero.' })
     }
 
-    return res.status(500).json({ message: 'Erro ao atualizar pedido.', error: error.message })
+    return res.status(500).json({
+      message: 'Erro ao atualizar pedido.',
+      error: error.message
+    })
   }
 }
 
@@ -138,12 +167,15 @@ async function deleteOrder(req, res) {
     const deletedOrder = await Order.findOneAndDelete({ orderId: id })
 
     if (!deletedOrder) {
-      return res.status(404).json({ message: 'Pedido nao encontrado.' })
+      return res.status(404).json({ message: 'O pedido nao foi encontrado.' })
     }
 
     return res.status(204).send()
   } catch (error) {
-    return res.status(500).json({ message: 'Erro ao deletar pedido.', error: error.message })
+    return res.status(500).json({
+      message: 'Erro ao deletar pedido.',
+      error: error.message
+    })
   }
 }
 
