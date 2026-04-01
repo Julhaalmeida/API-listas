@@ -1,21 +1,71 @@
-#Desafio Backend -
 
-Este projeto é uma API desenvolvida para o processo seletivo de Analista de Sistemas Jr. A aplicação realiza o gerenciamento de pedidos (Orders), permitindo a criação, listagem, atualização e exclusão de registros (CRUD) integrados com MongoDB.
+# 📦 API de Gerenciamento de Pedidos (Desafio Jitterbit)
 
-#Tecnologias Utilizadas Node.js & Express (Framework Web) Mongoose (Modelagem de dados/MongoDB) Dotenv (Variáveis de ambiente) Nodemon (Ambiente de desenvolvimento)
+Esta é uma API RESTful desenvolvida para o gerenciamento de pedidos, permitindo a criação, leitura e organização de itens. O projeto segue a arquitetura **MVC** (Model-View-Controller) para garantir uma estrutura limpa e escalável.
 
-#Estrutura do Projeto O projeto segue o padrão MVC para garantir escalabilidade e organização: config/: Configurações de banco de dados. controllers/: Lógica de negócio e tratamento de requisições. models/: Definição dos esquemas de dados. routes/: Definição dos endpoints da API.
+## 🚀 Tecnologias Utilizadas
+* **Node.js**: Ambiente de execução Javascript.
+* **Express**: Framework web para as rotas.
+* **MongoDB & Mongoose**: Banco de dados NoSQL e modelagem de dados.
+* **Dotenv**: Gerenciamento de variáveis de ambiente.
 
-#Como executar o projeto Instalar as dependências:
+## 🛠️ Como rodar o projeto localmente
 
-#Bash npm install Configurar o ambiente: Crie um arquivo .env na raiz do projeto com as seguintes variáveis:
+1. **Clone o repositório:**
+   ```bash
+   git clone [https://github.com/Julhaalmeida/API-listas.git](https://github.com/Julhaalmeida/API-listas.git)
+   ```
 
-#Code snippet PORT=3000 MONGO_URI=sua_string_de_conexao_com_o_mongodb Executar o projeto:
+2. **Instale as dependências:**
+   ```bash
+   npm install
+   ```
 
-#Bash npm run dev
+3. **Configure as variáveis de ambiente:**
+   Crie um arquivo `.env` na raiz do projeto e adicione sua string de conexão do MongoDB:
+   ```env
+   MONGO_URI=sua_conexao_aqui
+   PORT=3000
+   ```
 
-#Endpoints Método Endpoint Descrição POST /order Cria um novo pedido GET /order/:id Busca um pedido por ID GET /order/list Lista todos os pedidos PUT /order/:id Atualiza um pedido existente DELETE /order/:id Remove um pedido
+4. **Inicie o servidor:**
+   ```bash
+   npm start
+   ```
 
-Exemplo de JSON (Payload) Abaixo, um exemplo do formato esperado pela API no POST /order:
+## 🛣️ Rotas da API
 
-{ "numeroPedido": "v10089016vdb", "valorTotal": 10000, "dataCriacao": "2023-07-19T12:24:11.529Z", "items": [ { "idItem": "2434", "quantidadeItem": 1, "valorItem": 1000 } ] }
+| Método | Rota | Descrição |
+| :--- | :--- | :--- |
+| **POST** | `/orders` | Cria um novo pedido no banco de dados. |
+| **GET** | `/orders` | Lista todos os pedidos cadastrados. |
+
+## 📂 Estrutura de Pastas
+A organização do projeto segue o padrão MVC:
+* `models/`: Definição dos esquemas do banco de dados (Mongoose).
+* `controllers/`: Lógica de negócio e resposta às requisições.
+* `routes/`: Definição dos pontos de entrada (endpoints) da API.
+* `config/`: Configurações de banco de dados e ambiente.
+```
+
+---
+
+### Por que usar essa estrutura?
+Como notei pelas suas pastas (`controllers`, `models`, `routes`), você já está usando o padrão **MVC**. Isso é excelente! 
+
+
+
+[Image of MVC architecture diagram]
+
+
+* **Model:** Cuida dos dados (seu `orderModel.js`).
+* **Controller:** Cuida da lógica (seu `orderController.js`).
+* **Routes:** Direciona o tráfego para o lugar certo (seu `orderRoutes.js`).
+
+### Como subir essa atualização para o GitHub?
+Sempre que você alterar o README (ou qualquer código), o processo é sempre o mesmo "trio elétrico" de comandos:
+
+1.  `git add .` (Prepara a mudança)
+2.  `git commit -m "docs: atualizando o readme com instruções de uso"` (Dá nome à mudança)
+3.  `git push` (Envia para o site)
+
